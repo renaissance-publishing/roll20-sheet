@@ -1,0 +1,6 @@
+packages: .
+
+source-repository-package
+    type: git
+    location: https://github.com/sebastiaanvisser/clay.git
+    tag: 1f4e38b9d66ec46b266e75e09cbd5de33fed26b1

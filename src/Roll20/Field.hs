@@ -126,9 +126,10 @@ repField' f = isEditable >>= \case
 
 --
 
--- | Renders an action button with the given name into the sheet. Note that
---   this function handles prepending @act_@, and therefore it should not
---   be used in the argument.
+-- | Renders an action button with the given name into the sheet.
+--
+--   Note that this function handles prepending @act_@, and therefore it
+--   should not be used in the argument.
 actionButton :: (Applicative m) => T.Text -> HtmlT m () -> HtmlT m ()
 actionButton name = button_ [type_ "action", name_ rawName]
     where

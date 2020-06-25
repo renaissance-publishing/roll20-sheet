@@ -26,7 +26,7 @@ aptitudeStyles = do
 styleForLevel :: Int -> Css
 styleForLevel n =
     forM_ [n + 1 .. 5] $ \m ->
-        field WealthLevel # valueEq (tshow n) |~ rowSel m ? display none
+        field WealthLevel # valueEq (T.pack $ show n) |~ rowSel m ? display none
     where
         rowSel m = E.tr # byClass ("sheet-wealth-" <> T.pack (show m))
 

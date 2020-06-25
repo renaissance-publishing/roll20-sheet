@@ -15,15 +15,17 @@ import qualified Lucid as L
 import Roll20.Types
 
 -- | This type represents the different types of field that can be presented
---   to the user. There is no actual type-safety in the back end, and it would
---   be excessively difficult to emulate it within the library, so this purely
---   exists to control how a field is presented to the user.
-data FieldType = HiddenF
-               | TextF
-               | NumberF
-               | CheckboxF
-               | TextareaF
-               | SelectF [T.Text]
+--   to the user. There is no actual type-safety in the Roll20 backend, and it
+--   would be excessively difficult to emulate it within the library, so this
+--   purely exists to control how a field is presented to the user.
+data FieldType = HiddenF          -- ^ In HTML: @\<input type="hidden">@
+               | TextF            -- ^ In HTML: @\<input type="text">@
+               | NumberF          -- ^ In HTML: @\<input type="number">@
+               | CheckboxF        -- ^ In HTML: @\<input type="checkbox">@
+               | TextareaF        -- ^ In HTML: @\<textarea>@
+               | SelectF [T.Text] -- ^ In HTML: @\<select>@, with each element
+                                  --   of the list used to create an 
+                                  --   @\<option>@
                deriving (Eq, Show)
 
 fieldTypeAttrs :: FieldType -> [L.Attribute]

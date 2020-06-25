@@ -55,6 +55,7 @@ common common-base
                      , TemplateHaskell
                      , TupleSections
                      , TypeApplications
+                     , TypeFamilies
                      , TypeOperators
                      , QuasiQuotes
                      , UndecidableInstances
@@ -66,13 +67,13 @@ library
                      , Roll20.CSS.Colors
                      , Roll20.CSS.Elements
                      , Roll20.Field
-                     , Roll20.Field.Types
                      , Roll20.FieldList
                      , Roll20.RollTemplate
                      , Roll20.SheetWorker
                      , Roll20.Tabbed
                      , Roll20.Types
   other-modules:       Roll20.CSS.Selectors
+                     , Roll20.Field.Types
                      , Roll20.FieldList.Class
                      , Roll20.FieldList.TH
                      , Roll20.Tabbed.Styles

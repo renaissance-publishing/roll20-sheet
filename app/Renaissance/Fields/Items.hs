@@ -16,7 +16,9 @@ data ItemField = ItemName
                | ItemDescription
                deriving (Show, Eq)
 
-instance RepeatingSection ItemField "items" where
+instance RepeatingSection ItemField where
+    type RepeatingSectionName ItemField = "items"
+
     repeatingFieldType ItemName                   = TextF
     repeatingFieldType ItemIsWeapon               = CheckboxF
     repeatingFieldType ItemWeaponDamageDice       = NumberF

@@ -41,7 +41,7 @@ data Roll where
     Die       :: Roll -> Roll -> Roll
     Comment   :: Roll -> T.Text -> Roll
     Field     :: (SheetSection f) => f -> Roll
-    RepField  :: (RepeatingSection r name) => r -> Roll
+    RepField  :: (RepeatingSection r) => r -> Roll
     Query     :: T.Text -> Maybe Integer -> Roll
     EnumQuery :: T.Text -> [(T.Text, Roll)] -> Roll
     ToTracker :: Roll -> Roll
@@ -71,7 +71,7 @@ d100 = flip Die 100
 modifier :: Roll
 modifier = Comment (Query "Modifier" $ Just 0) "Modifier"
 
-repFieldRoll :: (RepeatingSection r name, Monad m) => r -> ASheet (TaggedT r m) Roll
+repFieldRoll :: (RepeatingSection r, Monad m) => r -> ASheet (TaggedT r m) Roll
 repFieldRoll = return . RepField
 
 instance Show Roll where

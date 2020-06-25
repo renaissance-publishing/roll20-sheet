@@ -27,15 +27,15 @@ import Roll20.Field.Types
 
 data SheetEvent where
     FieldChanged :: SheetSection f => f -> SheetEvent
-    RepeatingFieldChanged :: RepeatingSection f name => f -> SheetEvent
+    RepeatingFieldChanged :: RepeatingSection r => r -> SheetEvent
     Clicked :: T.Text -> SheetEvent
 
 toEventName :: SheetEvent -> T.Text
 toEventName (FieldChanged f) = "change:" <> fieldName f
-toEventName (RepeatingFieldChanged f) = T.concat event
+toEventName (RepeatingFieldChanged rf) = T.concat event
     where
-        event = ["change:repeating_", repName, ":", repeatingFieldName f]
-        repName = repeatingSectionName' f
+        event = ["change:repeating_", sectionName, ":", repeatingFieldName rf]
+        sectionName = repeatingSectionName' rf
 toEventName (Clicked c) = "clicked:" <> c
 
 instance ToJExpr SheetEvent where
@@ -60,7 +60,7 @@ withSectionId fn e = fn (RepeatingSectionId sid)
         lastIndex = [jmacroE| `(triggerName)`.lastIndexOf '_' |]
         sid = [jmacroE| `(triggerName)`.substring `(firstIndex + 1)` `(lastIndex)` |]
 
-rfNameWithSectionId :: forall r name . (RepeatingSection r name) => RepeatingSectionId -> r -> JExpr
+rfNameWithSectionId :: forall r. (RepeatingSection r) => RepeatingSectionId -> r -> JExpr
 rfNameWithSectionId (RepeatingSectionId sid) r = [jmacroE| `(idPrefix)`.concat `(sid)` "_" `(repeatingFieldName r)` |]
     where
         idPrefix = T.concat ["repeating_", sectionName, "_"]
@@ -71,13 +71,13 @@ withNewSectionId fn = [jmacro| `(fn')` generateRowID() |]
     where
         fn' = toLambda $ fn . RepeatingSectionId
 
-withEachSectionId :: forall r name . (RepeatingSection r name) => (RepeatingSectionId -> JStat) -> JStat
+withEachSectionId :: forall r. (RepeatingSection r) => (RepeatingSectionId -> JStat) -> JStat
 withEachSectionId fn = [jmacro| getSectionIDs `(sectionName)` (\ids -> ids.forEach `(fn')`) |]
     where
         sectionName = repeatingSectionName @r
         fn' = toLambda $ fn . RepeatingSectionId
 
-removeSectionById :: forall r name . (RepeatingSection r name) => RepeatingSectionId -> JStat
+removeSectionById :: forall r. (RepeatingSection r) => RepeatingSectionId -> JStat
 removeSectionById (RepeatingSectionId sid) = [jmacro| removeRepeatingRow (`(idPrefix)`.concat `(sid)`) |]
     where
         idPrefix = T.concat ["repeating_", sectionName, "_"]
@@ -95,7 +95,7 @@ getAttrs fs = rawGetAttrs fieldNames
     where
         fieldNames = toJExpr . fieldName <$> fs
 
-getAttrs' :: (SheetSection f, RepeatingSection r name, IsLambda fn 1) => [f] -> [r] -> RepeatingSectionId -> fn -> JStat
+getAttrs' :: (SheetSection f, RepeatingSection r, IsLambda fn 1) => [f] -> [r] -> RepeatingSectionId -> fn -> JStat
 getAttrs' fs rfs sid = rawGetAttrs $ fNames ++ rfNames
     where
         fNames = toJExpr . fieldName <$> fs
@@ -117,7 +117,7 @@ setAttrs kvs = rawSetAttrs kvs'
     where
         kvs' = first (toJExpr . fieldName) <$> kvs
 
-setAttrs' :: (RepeatingSection r name) => [(r, JExpr)] -> RepeatingSectionId -> JStat
+setAttrs' :: (RepeatingSection r) => [(r, JExpr)] -> RepeatingSectionId -> JStat
 setAttrs' kvs sid = rawSetAttrs kvs'
     where
         kvs' = first (rfNameWithSectionId sid) <$> kvs
@@ -125,7 +125,7 @@ setAttrs' kvs sid = rawSetAttrs kvs'
 setAttr :: (SheetSection f) => f -> JExpr -> JStat
 setAttr k v = setAttrs [(k, v)]
 
-setAttr' :: (RepeatingSection r name) => r -> JExpr -> RepeatingSectionId -> JStat
+setAttr' :: (RepeatingSection r) => r -> JExpr -> RepeatingSectionId -> JStat
 setAttr' k v = setAttrs' [(k, v)]
 
 --
@@ -150,7 +150,7 @@ rawGetValueAtField (f, ty) vs
 getValueAtField :: (SheetSection f) => f -> JExpr -> JExpr
 getValueAtField f = rawGetValueAtField (toJExpr $ fieldName f, fieldType f)
 
-getValueAtRepeatingField :: (RepeatingSection r name) 
+getValueAtRepeatingField :: (RepeatingSection r) 
                          => r -> RepeatingSectionId -> JExpr -> JExpr
 getValueAtRepeatingField r sid = rawGetValueAtField (name, ty)
     where
@@ -198,8 +198,8 @@ autocalculate dst src fn =
         fn' = toLambda fn
         values v = getValueAtField <$> src' <*> pure v
 
-autocalculateRepeating :: forall r f a b c rs fs fn name .
-                          (RepeatingSection r name, SheetSection f, IsLambda fn c
+autocalculateRepeating :: forall r f a b c rs fs fn .
+                          (RepeatingSection r, SheetSection f, IsLambda fn c
                           , FieldList rs r a, FieldList fs f b, (a + b) ~ c)
                        => r -> rs -> fs -> fn -> JStat
 autocalculateRepeating dst rsrc src fn = rchanged <> changed

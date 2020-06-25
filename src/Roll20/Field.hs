@@ -1,9 +1,21 @@
 module Roll20.Field
-    ( field, field', hiddenField
-    , repField, repField', hiddenRepField
-    , actionButton, rollButton
+    (
+    -- * Defining fields
+      FieldType(..)
+    -- ** Global fields
+    , SheetSection(..)
+    -- ** Scoped fields
+    , RepeatingSection(..)
+    , repeatingSectionName, repeatingSectionName'
+    -- * Displaying fields
+    -- ** Global fields
+    , field, field', hiddenField
+    -- ** Scoped fields
     , repeating
-    , module Roll20.Field.Types
+    , repField, repField', hiddenRepField
+    -- ** Buttons
+    , actionButton, rollButton
+    -- * Reexports
     , module Roll20.Types
     ) where
 
@@ -59,17 +71,17 @@ field' f = isEditable >>= \case
             _ -> field f `with` [readonly_ "true"]
         maybe (return ()) tellJs (fieldWorker f)
 
-repField :: (RepeatingSection r name) => r -> ASheet (TaggedT r m) ()
+repField :: (RepeatingSection r) => r -> ASheet (TaggedT r m) ()
 repField f = rawField (repeatingFieldName f)
                       (repeatingFieldType f)
                       (repeatingFieldDefault f)
 
-hiddenRepField :: (RepeatingSection r name) => r -> ASheet (TaggedT r m) ()
+hiddenRepField :: (RepeatingSection r) => r -> ASheet (TaggedT r m) ()
 hiddenRepField f = rawField (repeatingFieldName f)
                             HiddenF
                             Nothing
 
-repField' :: (RepeatingSection r name) => r -> ASheetR (TaggedT r m) ()
+repField' :: (RepeatingSection r) => r -> ASheetR (TaggedT r m) ()
 repField' f = isEditable >>= \case
     ReadWrite -> repField f
     ReadOnly  -> do
@@ -93,7 +105,7 @@ rollButton roll = button_ [type_ "roll", value_ val]
 
 --
 
-repeating :: forall r m name. (Monad m, RepeatingSection r name) => ASheet (TaggedT r m) () -> ASheet m ()
+repeating :: forall r m. (Monad m, RepeatingSection r) => ASheet (TaggedT r m) () -> ASheet m ()
 repeating = fieldset_ [class_ repTag] . withSectionTag
     where
         repTag = "repeating_" <> repeatingSectionName @r

@@ -23,7 +23,9 @@ data SkillField = SkillName
                 | SkillTotal
                 deriving (Show, Eq)
 
-instance RepeatingSection SkillField "skills" where
+instance RepeatingSection SkillField where
+    type RepeatingSectionName SkillField = "skills"
+
     repeatingFieldType SkillName = TextF
     repeatingFieldType SkillIsProficiency = CheckboxF
     repeatingFieldType SkillProficiencies = TextF

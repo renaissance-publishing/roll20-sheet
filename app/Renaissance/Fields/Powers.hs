@@ -7,7 +7,9 @@ data PowerField = PowerName
                 | PowerDescription
                 deriving (Show, Eq)
 
-instance RepeatingSection PowerField "powers" where
+instance RepeatingSection PowerField where
+    type RepeatingSectionName PowerField = "powers"
+
     repeatingFieldType PowerName        = TextF
     repeatingFieldType PowerAction      = TextF
     repeatingFieldType PowerDescription = TextareaF

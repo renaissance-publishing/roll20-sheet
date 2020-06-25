@@ -38,7 +38,7 @@ fieldType (SelectF _) = select
 fieldReadOnly :: Refinement
 fieldReadOnly = readonly
 
-repField :: (RepeatingSection r name) => r -> Selector
+repField :: (RepeatingSection r) => r -> Selector
 repField rf = star # ("name" @= rawName)
     where
         rawName = "attr_" <> repeatingFieldName rf

@@ -6,6 +6,8 @@ data ClassField = ClassName
                 | ClassDescription
                 deriving (Show, Eq)
 
-instance RepeatingSection ClassField "classes" where
+instance RepeatingSection ClassField where
+    type RepeatingSectionName ClassField = "classes"
+
     repeatingFieldType ClassName        = TextF
     repeatingFieldType ClassDescription = TextareaF

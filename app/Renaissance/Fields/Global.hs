@@ -10,7 +10,7 @@ import Data.Universe.Class
 import Language.Javascript.JMacro
 import Lucid
 
-import Roll20.Field.Types
+import Roll20.Field hiding ( field )
 import Roll20.SheetWorker
 
 data Aptitude = COG | COO | INT | SAV | SOM | WIL

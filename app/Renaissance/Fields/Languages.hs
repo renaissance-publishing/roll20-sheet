@@ -6,7 +6,9 @@ data LanguageField = LanguageName
                    | LanguageRanks
                    deriving (Show, Eq)
 
-instance RepeatingSection LanguageField "languages" where
+instance RepeatingSection LanguageField where
+    type RepeatingSectionName LanguageField = "languages"
+
     repeatingFieldType LanguageName  = TextF
     repeatingFieldType LanguageRanks = NumberF
 

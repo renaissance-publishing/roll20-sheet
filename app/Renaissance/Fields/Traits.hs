@@ -6,6 +6,8 @@ data TraitField = TraitName
                 | TraitDescription
                 deriving (Show, Eq)
 
-instance RepeatingSection TraitField "traits" where
+instance RepeatingSection TraitField where
+    type RepeatingSectionName TraitField = "traits"
+
     repeatingFieldType TraitName        = TextF
     repeatingFieldType TraitDescription = TextareaF

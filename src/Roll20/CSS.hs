@@ -53,7 +53,6 @@ module Roll20.CSS
     ) where
 
 import Control.Monad
-import qualified Data.Text as T
 import Prelude hiding ( all, not, round, rem, repeat )
 
 import Clay.Background

@@ -64,8 +64,8 @@ class SheetSection f where
         | otherwise                  = Nothing
 
     fieldWorker :: f -> Maybe JStat
-    -- ^ The default value of the field. By default, this is @'Just' "0"@ for
-    --   'NumberF's and 'Nothing' for all other fields.
+    -- ^ The sheet worker associated with the field. By default, this is
+    --   'Nothing' for all fields.
     fieldWorker _ = Nothing
 
 -- | A type with an instance of this class represents a set of fields @r@ that
@@ -100,8 +100,8 @@ class (KnownSymbol (RepeatingSectionName r)) => RepeatingSection r where
         | otherwise                           = Nothing
 
     repeatingFieldWorker :: r -> Maybe JStat
-    -- ^ The default value of the field. By default, this is @'Just' "0"@ for
-    --   'NumberF's and 'Nothing' for all other fields.
+    -- ^ The sheet worker associated with the field. By default, this is
+    --   'Nothing' for all fields.
     repeatingFieldWorker _ = Nothing
 
 -- | @repeatingSectionName \@r@ returns the associated 'RepeatingSectionName'

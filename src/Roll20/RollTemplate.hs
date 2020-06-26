@@ -8,7 +8,7 @@ module Roll20.RollTemplate
     , d4, d6, d8, d10, d12, d100, modifier
     , renderRoll
     , IsRollTemplate(..)
-    , RollWithTemplate(), rollWithTemplate
+    , RollWithTemplate( rollWithTemplate )
     , Arg(), Optional(..), IsNamedParameter(..), constArg
     , arg, argExists, argDoesNotExist
     , argIsCrit, argIsNotCrit
@@ -92,7 +92,7 @@ renderRollGroup :: [Roll] -> T.Text
 renderRollGroup = wrap "{" "}" . T.intercalate ", " . fmap renderRoll
 
 renderRoll :: Roll -> T.Text
-renderRoll (Die n sides) = T.concat [renderRoll n, "d", renderRoll sides]
+renderRoll (Die n sides) = T.concat [wrapParens n, "d", wrapParens sides]
 renderRoll (Comment r c) = T.concat [wrapParens r, "[", c, "]"]
 renderRoll (Field f) = wrap "@{" "}" $ fieldName f
 renderRoll (RepField r) = wrap "@{" "}" $ repeatingFieldName r
@@ -159,10 +159,10 @@ instance (Arg n ~ a, IsNamedParameter n, IsRollTemplate b) => IsRollTemplate (a 
 
 --
 
-rollWithTemplate :: (KnownSymbol name, RollWithTemplate t r) => Tagged name t -> r
-rollWithTemplate t = rollWithTemplate' t []
-
 class (IsRollTemplate t) => RollWithTemplate t r | t -> r where
+    rollWithTemplate :: (KnownSymbol name) => Tagged name t -> r
+    rollWithTemplate t = rollWithTemplate' t []
+
     rollWithTemplate' :: (KnownSymbol n) => Tagged n t -> [(T.Text, Roll)] -> r
 
 instance RollWithTemplate (RollTemplate ()) Roll where

@@ -1,6 +1,5 @@
 module Roll20.Tabbed
     ( TabbedSheet(..)
-    , TabbedSheetSection(..)
     , tabbed
     ) where
 
@@ -19,6 +18,7 @@ import Lucid
 
 --
 
+-- | @tabbed \@ts@ renders a 'TabbedSheet' @ts@ into pure HTML and CSS.
 tabbed :: forall ts. TabbedSheet ts => (Html (), C.Css)
 tabbed = (doc', css)
     where

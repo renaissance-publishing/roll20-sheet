@@ -30,6 +30,8 @@ instance ToHtml AptitudeRow where
     toHtmlRaw = toHtmlRaw . tshow
 
 data VitalStat = Name
+               | Gender
+               | Pronouns
                | Race
                | Age
                | Height
